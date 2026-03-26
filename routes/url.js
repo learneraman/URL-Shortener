@@ -1,14 +1,23 @@
 const express = require("express");
-const router = express.Router();
+const router  = express.Router();
+const { authMiddleware } = require("../middlewares/auth.middleware");
+const {
+  createShortUrl,
+  getShortUrl,
+  getallShortUrl,
+  deleteShortUrl,
+  getUrlAnalytics,
+} = require("../controllers/url.js");
 
-const { createShortUrl, getShortUrl,getallShortUrl, deleteShortUrl, getUrlAnalytics} = require("../controllers/url");
+// 🔒 Protected — login zaroori hai
+router.post("/",                        authMiddleware, createShortUrl);
+router.get("/",                         authMiddleware, getallShortUrl);
+router.delete("/:shortId",             authMiddleware, deleteShortUrl);
 
-router.post("/", createShortUrl);
-router.get("/", getallShortUrl);
+// Analytics (JSON) — protected
+router.get("/analytics/:shortId",      authMiddleware, getUrlAnalytics);
+
+// ✅ Public — anyone can use a short link to redirect
 router.get("/:shortId", getShortUrl);
-router.get("/analytics/:shortId", getUrlAnalytics);
-router.delete("/:shortId", deleteShortUrl);
-
-
 
 module.exports = router;
