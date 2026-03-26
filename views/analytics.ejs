@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analytics - <%= data.shortId %></title>
+</head>
+<body>
+    <h1>Analytics — <%= data.shortId %></h1>
+    <a href="/urlhistory">← Back to History</a>
+    <hr>
+
+    <p><strong>Short ID:</strong> <%= data.shortId %></p>
+    <p><strong>Original URL:</strong> <a href="<%= data.originalUrl %>" target="_blank"><%= data.originalUrl %></a></p>
+    <p><strong>Total Visits:</strong> <%= data.totalVisits %></p>
+    <p><strong>Created At:</strong> <%= new Date(data.createdAt).toLocaleString() %></p>
+    <p><strong>Last Visited:</strong> <%= data.lastVisited ? new Date(data.lastVisited).toLocaleString() : 'Never' %></p>
+    <p><strong>Expires At:</strong> <%= data.expiresAt ? new Date(data.expiresAt).toLocaleString() : 'Never' %></p>
+
+    <hr>
+    <h2>Recent Visits (Last 10)</h2>
+    <% if (data.recentVisits && data.recentVisits.length > 0) { %>
+        <table border="1" cellpadding="8" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Time</th>
+                    <th>Browser</th>
+                    <th>OS</th>
+                    <th>Device</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% data.recentVisits.slice().reverse().forEach((visit, i) => { %>
+                <tr>
+                    <td><%= i + 1 %></td>
+                    <td><%= new Date(visit.timestamp).toLocaleString() %></td>
+                    <td><%= visit.browser || 'Unknown' %></td>
+                    <td><%= visit.os || 'Unknown' %></td>
+                    <td><%= visit.device || 'Desktop' %></td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>No visits recorded yet.</p>
+    <% } %>
+</body>
+</html>

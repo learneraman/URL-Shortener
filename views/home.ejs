@@ -1,37 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <style>
-        body {
-            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-        }
-    </style>
+    <title>URL Shortener</title>
 </head>
-
 <body>
+    <h1>URL Shortener</h1>
 
-    <h1>URL Shortner</h1>
+    <!-- User info + logout -->
+    <p>Welcome, <strong><%= user.username %></strong> (<%= user.email %>)
+    &nbsp;|&nbsp; <a href="/api/auth/logout">Logout</a>
+    &nbsp;|&nbsp; <a href="/urlhistory">My URL History</a>
+    </p>
+    <hr>
+
+    <form action="/api/shorturl" method="POST">
+        <label>Long URL:</label><br>
+        <input type="text" name="url" size="60" placeholder="https://example.com/very/long/url" autofocus><br><br>
+
+        <label>Custom Slug (optional):</label><br>
+        <input type="text" name="customSlug" size="30" placeholder="my-custom-link"><br><br>
+
+        <label>Expires in days (optional):</label><br>
+        <input type="number" name="expiryDays" min="1" max="365" placeholder="e.g. 7"><br><br>
+
+        <button type="submit">Shorten URL</button>
+    </form>
+
+    <% if (locals.error) { %>
+        <p style="color:red;"><strong>Error:</strong> <%= error %></p>
+    <% } %>
 
     <% if (locals.shortID) { %>
-        <p>
-            Redirect URL:
-            <a href="http://localhost:3000/api/shorturl/<%= shortID %>" target="_blank">
-                <%= shortID %>
-            </a> 
+        <hr>
+        <p><strong>Short ID:</strong> <%= shortID %></p>
+        <p><strong>Redirect URL:</strong>
+            <a href="/api/shorturl/<%= shortID %>" target="_blank">
+                http://localhost:3000/api/shorturl/<%= shortID %>
+            </a>
         </p>
-        <% } %>
-
-
-            <form action="/api/shorturl" method="POST">
-                <label for="url">Enter original URL : </label>
-                <input type="text" name="url" id="url" placeholder="https://www.google.com">
-                <button type="submit">Generate</button>
-            </form>
-
+        <% if (locals.message) { %><p><em><%= message %></em></p><% } %>
+        <% if (locals.expiresAt) { %><p><strong>Expires:</strong> <%= new Date(expiresAt).toLocaleDateString() %></p><% } %>
+        <p><a href="/analytics/<%= shortID %>">View Analytics</a></p>
+    <% } %>
 </body>
-
-</html
+</html>

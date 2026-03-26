@@ -2,19 +2,40 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>URL History</title>
 </head>
 <body>
-    <h2>All genereted Short URLs</h2>
-    <p>
-    <% urls.forEach((url) => { %>
-        <li><%= url.shortId %> : <%= url.originalUrl %></li> 
-    <% }) %>
-    </p>
-    <h2>Total visits on each URL</h2>
-    <p><% urls.forEach((url) => { %>
-        <li> <a href="http://localhost:3000/api/shorturl/<%= url.shortId %>"><%= url.shortId %></a> : <%= url.originalUrl %> : <%= url.visitHistory.length %></li> 
-    <% }) %></p>
+    <h1>URL History</h1>
+    <a href="/">← Back to Home</a>
+    <br><br>
+
+    <% if (!urls || urls.length === 0) { %>
+        <p>No URLs shortened yet.</p>
+    <% } else { %>
+        <table border="1" cellpadding="8" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Short ID</th>
+                    <th>Original URL</th>
+                    <th>Total Visits</th>
+                    <th>Expires At</th>
+                    <th>Created</th>
+                    <th>Analytics</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% urls.forEach((url) => { %>
+                <tr>
+                    <td><a href="/api/shorturl/<%= url.shortId %>" target="_blank"><%= url.shortId %></a></td>
+                    <td><%= url.originalUrl.length > 60 ? url.originalUrl.substring(0,60) + '...' : url.originalUrl %></td>
+                    <td><%= url.visitHistory.length %></td>
+                    <td><%= url.expiresAt ? new Date(url.expiresAt).toLocaleDateString() : 'Never' %></td>
+                    <td><%= new Date(url.createdAt).toLocaleDateString() %></td>
+                    <td><a href="/analytics/<%= url.shortId %>">View</a></td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } %>
 </body>
 </html>

@@ -1,1 +1,40 @@
+# Dependencies
 node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment variables (NEVER commit these!)
+.env
+.env.local
+.env.*.local
+
+# IDE and Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build and dist
+dist/
+build/
+.next/
+
+# OS Files
+Thumbs.db
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Optional npm cache
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Temporary files
+temp/
+tmp/
