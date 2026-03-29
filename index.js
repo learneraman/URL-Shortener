@@ -1,6 +1,8 @@
 const express           = require("express");
 const path              = require("path");
 const cookieParser      = require("cookie-parser");
+const helmet            = require("helmet");
+const morgan            = require("morgan");
 require("dotenv").config();
 
 const connectDB         = require("./config/db");
@@ -14,6 +16,8 @@ const URL               = require("./models/url");
 const app = express();
 
 // ── Middlewares ────────────────────────────────────────────────────────────────
+app.use(helmet());                           // Security headers
+app.use(morgan("dev"));                      // Request logging
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());   // cookie-parser — req.cookies available hoga

@@ -27,8 +27,10 @@
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-rate-limit": "^8.3.1",
+    "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.16.1",
+    "morgan": "^1.10.1",
     "shortid": "^2.2.17",
     "ua-parser-js": "^2.0.9"
   },
