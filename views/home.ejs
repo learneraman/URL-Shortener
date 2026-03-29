@@ -3,45 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>URL Shortener</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <h1>URL Shortener</h1>
+<div class="container">
+    <div class="header-links">
+        <div>Welcome, <strong><%= user.username %></strong></div>
+        <div style="flex-grow: 1;"></div>
+        <a href="/urlhistory">History</a>
+        <a href="/api/auth/logout">Logout</a>
+    </div>
 
-    <!-- User info + logout -->
-    <p>Welcome, <strong><%= user.username %></strong> (<%= user.email %>)
-    &nbsp;|&nbsp; <a href="/api/auth/logout">Logout</a>
-    &nbsp;|&nbsp; <a href="/urlhistory">My URL History</a>
-    </p>
-    <hr>
+    <h1>Shorten a New URL</h1>
 
     <form action="/api/shorturl" method="POST">
-        <label>Long URL:</label><br>
-        <input type="text" name="url" size="60" placeholder="https://example.com/very/long/url" autofocus><br><br>
+        <label>Long URL:</label>
+        <input type="text" name="url" placeholder="https://example.com/very/long/url" autofocus>
 
-        <label>Custom Slug (optional):</label><br>
-        <input type="text" name="customSlug" size="30" placeholder="my-custom-link"><br><br>
+        <label>Custom Slug (optional):</label>
+        <input type="text" name="customSlug" placeholder="my-custom-link">
 
-        <label>Expires in days (optional):</label><br>
-        <input type="number" name="expiryDays" min="1" max="365" placeholder="e.g. 7"><br><br>
+        <label>Expires in days (optional):</label>
+        <input type="number" name="expiryDays" min="1" max="365" placeholder="e.g. 7">
 
         <button type="submit">Shorten URL</button>
     </form>
 
     <% if (locals.error) { %>
-        <p style="color:red;"><strong>Error:</strong> <%= error %></p>
+        <div class="error"><strong>Error:</strong> <%= error %></div>
     <% } %>
 
     <% if (locals.shortID) { %>
-        <hr>
-        <p><strong>Short ID:</strong> <%= shortID %></p>
-        <p><strong>Redirect URL:</strong>
-            <a href="/api/shorturl/<%= shortID %>" target="_blank">
-                http://localhost:3000/api/shorturl/<%= shortID %>
-            </a>
-        </p>
-        <% if (locals.message) { %><p><em><%= message %></em></p><% } %>
-        <% if (locals.expiresAt) { %><p><strong>Expires:</strong> <%= new Date(expiresAt).toLocaleDateString() %></p><% } %>
-        <p><a href="/analytics/<%= shortID %>">View Analytics</a></p>
+        <div class="success-box">
+            <h3>🎉 URL Shortened!</h3>
+            <p><strong>Short ID:</strong> <%= shortID %></p>
+            <p><strong>Redirect URL:</strong>
+                <a href="/api/shorturl/<%= shortID %>" target="_blank">
+                    http://localhost:3000/api/shorturl/<%= shortID %>
+                </a>
+            </p>
+            <% if (locals.message) { %><p><em><%= message %></em></p><% } %>
+            <% if (locals.expiresAt) { %><p><strong>Expires:</strong> <%= new Date(expiresAt).toLocaleDateString() %></p><% } %>
+            <p style="margin-top: 1rem;"><a href="/analytics/<%= shortID %>">View Analytics →</a></p>
+        </div>
     <% } %>
+</div>
 </body>
 </html>

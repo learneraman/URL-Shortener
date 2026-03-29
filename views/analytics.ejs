@@ -3,46 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <title>Analytics - <%= data.shortId %></title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <h1>Analytics — <%= data.shortId %></h1>
-    <a href="/urlhistory">← Back to History</a>
-    <hr>
+<div class="container">
+    <div class="header-links">
+        <a href="/urlhistory">← Back to History</a>
+        <div style="flex-grow: 1;"></div>
+        <div>Analytics: <strong><%= data.shortId %></strong></div>
+    </div>
 
-    <p><strong>Short ID:</strong> <%= data.shortId %></p>
-    <p><strong>Original URL:</strong> <a href="<%= data.originalUrl %>" target="_blank"><%= data.originalUrl %></a></p>
-    <p><strong>Total Visits:</strong> <%= data.totalVisits %></p>
-    <p><strong>Created At:</strong> <%= new Date(data.createdAt).toLocaleString() %></p>
-    <p><strong>Last Visited:</strong> <%= data.lastVisited ? new Date(data.lastVisited).toLocaleString() : 'Never' %></p>
-    <p><strong>Expires At:</strong> <%= data.expiresAt ? new Date(data.expiresAt).toLocaleString() : 'Never' %></p>
+    <h1>URL Analytics</h1>
+    
+    <div class="success-box" style="margin-top: 1rem;">
+        <p><strong>Original URL:</strong> <a href="<%= data.originalUrl %>" target="_blank"><%= data.originalUrl %></a></p>
+        <p><strong>Total Visits:</strong> <%= data.totalVisits %></p>
+        <p><strong>Created:</strong> <%= new Date(data.createdAt).toLocaleString() %></p>
+        <p><strong>Last Visited:</strong> <%= data.lastVisited ? new Date(data.lastVisited).toLocaleString() : 'Never' %></p>
+        <p><strong>Expires:</strong> <span style="color: var(--danger);"><%= data.expiresAt ? new Date(data.expiresAt).toLocaleString() : 'Never' %></span></p>
+    </div>
 
-    <hr>
-    <h2>Recent Visits (Last 10)</h2>
+    <h2 style="margin-top: 2.5rem;">Recent Visits (Last 10)</h2>
     <% if (data.recentVisits && data.recentVisits.length > 0) { %>
-        <table border="1" cellpadding="8" cellspacing="0">
+        <table>
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Time</th>
-                    <th>Browser</th>
+                    <th>Visit #</th>
+                    <th>Timestamp (Local Time)</th>
                     <th>OS</th>
                     <th>Device</th>
                 </tr>
             </thead>
             <tbody>
-                <% data.recentVisits.slice().reverse().forEach((visit, i) => { %>
-                <tr>
-                    <td><%= i + 1 %></td>
-                    <td><%= new Date(visit.timestamp).toLocaleString() %></td>
-                    <td><%= visit.browser || 'Unknown' %></td>
-                    <td><%= visit.os || 'Unknown' %></td>
-                    <td><%= visit.device || 'Desktop' %></td>
-                </tr>
+                <% data.recentVisits.slice().reverse().forEach((visit, index) => { %>
+                    <tr>
+                        <td><strong><%= index + 1 %></strong></td>
+                        <td><%= new Date(visit.timestamp).toLocaleString() %></td>
+                        <td><%= visit.os || 'Unknown' %></td>
+                        <td><%= visit.device || 'Desktop' %></td>
+                    </tr>
                 <% }) %>
             </tbody>
         </table>
     <% } else { %>
-        <p>No visits recorded yet.</p>
+        <p style="color: #64748b; font-style: italic;">No visits recorded yet.</p>
     <% } %>
+</div>
 </body>
 </html>

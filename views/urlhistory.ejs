@@ -2,40 +2,75 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>URL History</title>
+    <title>My URL History</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <h1>URL History</h1>
-    <a href="/">← Back to Home</a>
-    <br><br>
+<div class="container">
+    <div class="header-links">
+        <a href="/">← Back to Home</a>
+        <div style="flex-grow: 1;"></div>
+        <div>User: <strong><%= user.username %></strong></div>
+    </div>
 
-    <% if (!urls || urls.length === 0) { %>
-        <p>No URLs shortened yet.</p>
-    <% } else { %>
-        <table border="1" cellpadding="8" cellspacing="0">
+    <h1>My URL History</h1>
+    
+    <% if (locals.error) { %>
+        <div class="error"><%= error %></div>
+    <% } %>
+
+    <% if (urls && urls.length > 0) { %>
+        <table>
             <thead>
                 <tr>
                     <th>Short ID</th>
                     <th>Original URL</th>
-                    <th>Total Visits</th>
-                    <th>Expires At</th>
+                    <th>Clicks</th>
+                    <th>Expires</th>
                     <th>Created</th>
-                    <th>Analytics</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <% urls.forEach((url) => { %>
-                <tr>
-                    <td><a href="/api/shorturl/<%= url.shortId %>" target="_blank"><%= url.shortId %></a></td>
-                    <td><%= url.originalUrl.length > 60 ? url.originalUrl.substring(0,60) + '...' : url.originalUrl %></td>
-                    <td><%= url.visitHistory.length %></td>
-                    <td><%= url.expiresAt ? new Date(url.expiresAt).toLocaleDateString() : 'Never' %></td>
-                    <td><%= new Date(url.createdAt).toLocaleDateString() %></td>
-                    <td><a href="/analytics/<%= url.shortId %>">View</a></td>
-                </tr>
+                    <tr>
+                        <td><strong><%= url.shortId %></strong></td>
+                        <td>
+                            <a href="<%= url.originalUrl %>" target="_blank" style="max-width: 200px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                <%= url.originalUrl %>
+                            </a>
+                        </td>
+                        <td><%= url.totalVisits %></td>
+                        <td><%= url.expiresAt ? new Date(url.expiresAt).toLocaleDateString() : '-' %></td>
+                        <td><%= new Date(url.createdAt).toLocaleDateString() %></td>
+                        <td>
+                            <a href="/analytics/<%= url.shortId %>" style="margin-right: 10px;">Analytics</a>
+                            <button class="danger" onclick="deleteUrl('<%= url.shortId %>')">Delete</button>
+                        </td>
+                    </tr>
                 <% }) %>
             </tbody>
         </table>
+    <% } else { %>
+        <p>You haven't shortened any URLs yet.</p>
     <% } %>
+
+    <script>
+        async function deleteUrl(shortId) {
+            if (!confirm('Are you sure you want to delete this short URL?')) return;
+            try {
+                const res = await fetch(`/api/shorturl/${shortId}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (json.success) {
+                    window.location.reload();
+                } else {
+                    alert('Error deleting URL: ' + (json.error || 'Unknown error'));
+                }
+            } catch (err) {
+                alert('Server error occurred.');
+            }
+        }
+    </script>
+</div>
 </body>
 </html>

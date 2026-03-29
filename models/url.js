@@ -21,7 +21,6 @@ const urlSchema = new mongoose.Schema(
     visitHistory: [
       {
         timestamp: { type: Date, default: Date.now },
-        browser:   { type: String, default: "Unknown" },
         os:        { type: String, default: "Unknown" },
         device:    { type: String, default: "Desktop" },
       },

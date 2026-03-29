@@ -2,29 +2,33 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Signup — URL Shortener</title>
+    <title>Create Account — URL Shortener</title>
+    <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-    <h1>Create Account</h1>
+<div class="container" style="max-width: 400px; margin-top: 4rem;">
+    <h1 style="text-align: center;">Sign Up</h1>
 
     <% if (locals.error) { %>
-        <p style="color:red;"><strong>Error:</strong> <%= error %></p>
+        <div class="error"><%= error %></div>
     <% } %>
 
     <form action="/api/auth/signup" method="POST">
-        <label>Username:</label><br>
-        <input type="text" name="username" required><br><br>
+        <label>Username:</label>
+        <input type="text" name="username" required autofocus>
 
-        <label>Email:</label><br>
-        <input type="email" name="email" required><br><br>
+        <label>Email:</label>
+        <input type="email" name="email" required>
 
-        <label>Password (min 6 chars):</label><br>
-        <input type="password" name="password" required><br><br>
+        <label>Password (min 6 chars):</label>
+        <input type="password" name="password" required minlength="6">
 
-        <button type="submit">Sign Up</button>
+        <button type="submit" style="width: 100%; margin-top: 1rem;">Create Account</button>
     </form>
 
-    <br>
-    <p>Already have an account? <a href="/login">Login here</a></p>
+    <div style="text-align: center; margin-top: 2rem; font-size: 0.95rem;">
+        Already have an account? <a href="/login">Login here</a>
+    </div>
+</div>
 </body>
 </html>
