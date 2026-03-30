@@ -6,6 +6,7 @@ const morgan            = require("morgan");
 require("dotenv").config();
 
 const connectDB         = require("./config/db");
+const { connectRedis }  = require("./config/redis");
 const { createLimiter } = require("./middlewares/rateLimiter");
 const { authMiddleware } = require("./middlewares/auth.middleware");
 const shortURLRoutes    = require("./routes/url");
@@ -16,8 +17,9 @@ const URL               = require("./models/url");
 const app = express();
 
 // ── Middlewares ────────────────────────────────────────────────────────────────
-app.use(helmet());                           // Security headers
+app.use(helmet({ contentSecurityPolicy: false })); // CSP disabled taaki EJS ke inline scripts chalein
 app.use(morgan("dev"));                      // Request logging
+app.use(express.static(path.resolve("./public"))); // Static CSS/JS files ke liye
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());   // cookie-parser — req.cookies available hoga
@@ -32,8 +34,9 @@ if (!process.env.JWT_SECRET) {
   process.exit(1);
 }
 
-// ── Database ───────────────────────────────────────────────────────────────────
+// ── Database & Redis ──────────────────────────────────────────────────────────
 connectDB(process.env.MONGO_URL);
+connectRedis();
 
 // ── View Engine ────────────────────────────────────────────────────────────────
 app.set("view engine", "ejs");
