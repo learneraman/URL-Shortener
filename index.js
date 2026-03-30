@@ -17,12 +17,12 @@ const URL               = require("./models/url");
 const app = express();
 
 // ── Middlewares ────────────────────────────────────────────────────────────────
-app.use(helmet({ contentSecurityPolicy: false })); // CSP disabled taaki EJS ke inline scripts chalein
-app.use(morgan("dev"));                      // Request logging
-app.use(express.static(path.resolve("./public"))); // Static CSS/JS files ke liye
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());   // cookie-parser — req.cookies available hoga
+app.use(helmet({ contentSecurityPolicy: false })); // CSP disabled taaki EJS ke inline scripts chalein
+app.use(morgan("dev"));      // Request logging
+app.use(express.static(path.join(__dirname, "public"))); // Static CSS/JS files ke liye
 
 // ── Environment Check ──────────────────────────────────────────────────────────
 if (!process.env.MONGO_URL) {
@@ -42,7 +42,7 @@ connectRedis();
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 
-// ── Routes ─────────────────────────────────────────────────────────────────────
+// ── Routes ────────────────────────────────────────────────────────────────
 app.use("/api/auth",    authRoutes);                           // Signup / Login / Logout
 app.use("/api/shorturl", createLimiter, shortURLRoutes);      // URL API (protected inside)
 app.use("/", staticRoutes);                                    // Pages (home protected, login/signup public)
