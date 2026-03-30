@@ -1,6 +1,6 @@
 const jwt  = require("jsonwebtoken");
 
-// ─── Auth Middleware ─────────────────────────────────────────────────────────
+// ─── Auth Middleware  
 // Yeh middleware har protected route ke pehle chalta hai
 // Cookie se token nikalta hai → verify karta hai → req.user set karta hai
 function authMiddleware(req, res, next) {

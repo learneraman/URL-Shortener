@@ -17,7 +17,7 @@ router.delete("/:shortId",             authMiddleware, deleteShortUrl);
 // Analytics (JSON) — protected
 router.get("/analytics/:shortId",      authMiddleware, getUrlAnalytics);
 
-// ✅ Public — anyone can use a short link to redirect
+// Public — anyone can use a short link to redirect
 router.get("/:shortId", getShortUrl);
 
 module.exports = router;
