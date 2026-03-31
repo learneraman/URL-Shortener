@@ -34,7 +34,11 @@
             <tbody>
                 <% urls.forEach((url) => { %>
                     <tr>
-                        <td><strong><%= url.shortId %></strong></td>
+                        <td>
+                            <a href="/api/shorturl/<%= url.shortId %>" target="_blank" style="font-weight: 600;">
+                                <%= url.shortId %>
+                            </a>
+                        </td>
                         <td>
                             <a href="<%= url.originalUrl %>" target="_blank" style="max-width: 200px; display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                                 <%= url.originalUrl %>

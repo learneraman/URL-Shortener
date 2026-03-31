@@ -25,18 +25,21 @@ async function createShortUrl(req, res) {
   try {
     const { url, customSlug, expiryDays } = req.body;
 
-    if (!url || url.trim() === "") return res.render("home", { user: req.user, error: "Please enter a URL." });
-    if (!isValidUrl(url)) return res.render("home", { user: req.user, error: "Invalid URL. Must start with http:// or https://" });
-    if (url.length > 2048) return res.render("home", { user: req.user, error: "URL too long. Max 2048 chars." });
+    if (!url || url.trim() === "") return res.redirect("/?" + new URLSearchParams({ error: "Please enter a URL." }).toString());
+    if (!isValidUrl(url)) return res.redirect("/?" + new URLSearchParams({ error: "Invalid URL. Must start with http:// or https://" }).toString());
+    if (url.length > 2048) return res.redirect("/?" + new URLSearchParams({ error: "URL too long. Max 2048 chars." }).toString());
 
     if (customSlug) {
-      if (!/^[a-zA-Z0-9_-]+$/.test(customSlug)) return res.render("home", { user: req.user, error: "Slug: only letters, numbers, - and _ allowed." });
+      if (!/^[a-zA-Z0-9_-]+$/.test(customSlug)) return res.redirect("/?" + new URLSearchParams({ error: "Slug: only letters, numbers, - and _ allowed." }).toString());
       const slugExists = await URL.findOne({ shortId: customSlug.toLowerCase() });
-      if (slugExists) return res.render("home", { user: req.user, error: `Slug '${customSlug}' is already taken.` });
+      if (slugExists) return res.redirect("/?" + new URLSearchParams({ error: `Slug '${customSlug}' is already taken.` }).toString());
     }
 
     const existing = await URL.findOne({ originalUrl: url, createdBy: req.user.id });
-    if (existing && !customSlug) return res.render("home", { user: req.user, shortID: existing.shortId, message: "Already shortened!" });
+    if (existing) {
+      const message = customSlug ? "You already have a shortened link for this URL. Custom slug was ignored." : "Already shortened!";
+      return res.redirect("/?" + new URLSearchParams({ shortID: existing.shortId, message }).toString());
+    }
 
     let expiresAt = null;
     if (expiryDays && !isNaN(expiryDays) && Number(expiryDays) > 0) {
@@ -56,11 +59,15 @@ async function createShortUrl(req, res) {
     });
 
     console.log(`✓ [${req.user.email}] Created: ${shortID} → ${url}`);
-    return res.render("home", { user: req.user, shortID: newUrl.shortId, expiresAt: newUrl.expiresAt });
+    
+    // Redirect with success values
+    const queryParams = new URLSearchParams({ shortID: newUrl.shortId });
+    if (newUrl.expiresAt) queryParams.append("expiresAt", newUrl.expiresAt.toISOString());
+    return res.redirect("/?" + queryParams.toString());
 
   } catch (err) {
     console.error("❌ createShortUrl:", err.message);
-    return res.render("home", { user: req.user, error: "Server error. Try again." });
+    return res.redirect("/?" + new URLSearchParams({ error: "Server error. Try again." }).toString());
   }
 }
 

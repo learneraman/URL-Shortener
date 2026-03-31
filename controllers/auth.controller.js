@@ -32,18 +32,16 @@ async function signup(req, res) {
     });
 
     // Generate JWT token — sign karo user ki id aur email se
-    // jwt.sign( payload, secretKey, options )
     const token = jwt.sign(
       { id: user._id, email: user.email, username: user.username },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }       // Token 7 din baad expire hoga
+      { expiresIn: process.env.JWT_EXPIRES_IN || "5d" }
     );
 
-    // Token ko HttpOnly cookie mein daalo
-    // HttpOnly = JS se access nahi ho sakta (XSS protection)
+    const cookieDays = Number(process.env.JWT_COOKIE_EXPIRES_IN) || 5;
     res.cookie("token", token, {
       httpOnly: true,
-      maxAge:   7 * 24 * 60 * 60 * 1000, // 7 days in ms
+      maxAge:   cookieDays * 24 * 60 * 60 * 1000,
     });
 
     console.log(`✓ New user registered: ${user.email}`);
@@ -78,12 +76,13 @@ async function login(req, res) {
     const token = jwt.sign(
       { id: user._id, email: user.email, username: user.username },
       process.env.JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: process.env.JWT_EXPIRES_IN || "5d" }
     );
 
+    const cookieDays = Number(process.env.JWT_COOKIE_EXPIRES_IN) || 5;
     res.cookie("token", token, {
       httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      maxAge: cookieDays * 24 * 60 * 60 * 1000,
     });
 
     console.log(`✓ User logged in: ${user.email}`);

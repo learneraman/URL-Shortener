@@ -38,8 +38,8 @@
             <h3>🎉 URL Shortened!</h3>
             <p><strong>Short ID:</strong> <%= shortID %></p>
             <p><strong>Redirect URL:</strong>
-                <a href="/api/shorturl/<%= shortID %>" target="_blank">
-                    http://localhost:3000/api/shorturl/<%= shortID %>
+                <a href="/api/shorturl/<%= shortID %>" target="_blank" id="shortUrlLink">
+                    /api/shorturl/<%= shortID %>
                 </a>
             </p>
             <% if (locals.message) { %><p><em><%= message %></em></p><% } %>
@@ -48,5 +48,19 @@
         </div>
     <% } %>
 </div>
+<script>
+    // 1. Convert relative link to full domain link dynamically 
+    const link = document.getElementById('shortUrlLink');
+    if (link) {
+        link.textContent = window.location.origin + link.getAttribute('href');
+        link.href = window.location.origin + link.getAttribute('href');
+    }
+
+    // 2. Clear ?error= or ?shortID= from the browser URL address bar
+    //    so that a page refresh (F5) doesn't show the error/success banner again.
+    if (window.history.replaceState && window.location.search) {
+        window.history.replaceState(null, null, window.location.pathname);
+    }
+</script>
 </body>
 </html>
