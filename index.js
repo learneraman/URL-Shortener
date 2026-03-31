@@ -65,6 +65,7 @@ app.get("/analytics/:shortId", authMiddleware, async (req, res) => {
         lastVisited: url.visitHistory.length > 0 ? url.visitHistory.at(-1).timestamp : null,
         recentVisits: url.visitHistory.slice(-10),
       },
+      host: req.get("host")
     });
   } catch (err) {
     return res.status(500).send("Error loading analytics.");
@@ -75,9 +76,9 @@ app.get("/analytics/:shortId", authMiddleware, async (req, res) => {
 app.get("/urlhistory", authMiddleware, async (req, res) => {
   try {
     const urls = await URL.find({ createdBy: req.user.id }).sort({ createdAt: -1 });
-    return res.render("urlhistory", { urls, user: req.user });
+    return res.render("urlhistory", { urls, user: req.user, host: req.get("host") });
   } catch (err) {
-    return res.status(500).render("urlhistory", { urls: [], user: req.user, error: "Failed to load history" });
+    return res.status(500).render("urlhistory", { urls: [], user: req.user, host: req.get("host"), error: "Failed to load history" });
   }
 });
 
